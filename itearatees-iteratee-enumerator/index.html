@@ -53,20 +53,26 @@
 
 <meta name="description" content="ItearateeItearatee 到底是什么
 Play 请求过程注意PlayDefaultUpstreamHandler在play-netty-server的play.core.server中PlayDefaultUpstreamHandler 同样
-Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
+
+PlayDefaultUpstreamHandler 中的 handleAction方法处理action
+rh =&amp;gt; server.ge">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Iteratess && Itearatee && Enumerator">
 <meta property="og:url" content="http://zhuonima.github.io/itearatees-iteratee-enumerator/index.html">
-<meta property="og:site_name" content="为什么还在问为什么">
+<meta property="og:site_name" content="Lazys的博客">
 <meta property="og:description" content="ItearateeItearatee 到底是什么
 Play 请求过程注意PlayDefaultUpstreamHandler在play-netty-server的play.core.server中PlayDefaultUpstreamHandler 同样
-Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
-<meta property="og:updated_time" content="2015-11-22T13:20:28.000Z">
+
+PlayDefaultUpstreamHandler 中的 handleAction方法处理action
+rh =&amp;gt; server.ge">
+<meta property="og:updated_time" content="2015-11-27T11:18:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Iteratess && Itearatee && Enumerator">
 <meta name="twitter:description" content="ItearateeItearatee 到底是什么
 Play 请求过程注意PlayDefaultUpstreamHandler在play-netty-server的play.core.server中PlayDefaultUpstreamHandler 同样
-Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
+
+PlayDefaultUpstreamHandler 中的 handleAction方法处理action
+rh =&amp;gt; server.ge">
 
 
 
@@ -78,7 +84,7 @@ Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
   };
 </script>
 
-  <title> Iteratess && Itearatee && Enumerator | 为什么还在问为什么 </title>
+  <title> Iteratess && Itearatee && Enumerator | Lazys的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -109,7 +115,7 @@ Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">为什么还在问为什么</span>
+      <span class="site-title">Lazys的博客</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -234,6 +240,10 @@ Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
       
         <span itemprop="articleBody"><h1 id="Itearatee">Itearatee</h1><p><code>Itearatee</code> 到底是什么</p>
 <h1 id="Play_请求过程">Play 请求过程</h1><p>注意<code>PlayDefaultUpstreamHandler</code>在<code>play-netty-server</code>的<code>play.core.server</code>中<br><code>PlayDefaultUpstreamHandler</code> 同样</p>
+<blockquote>
+<p>PlayDefaultUpstreamHandler 中的 handleAction方法处理action</p>
+<p>rh =&gt; server.getHandlerFor(rh) 处理handle</p>
+</blockquote>
 <h1 id="Play中的Action源码分析">Play中的Action源码分析</h1><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">ActionBuilder</span>[</span><span class="type">A</span>] &#123;&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h1 id="ActionFuntion是什么">ActionFuntion是什么</h1><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">ActionFuntion</span>[</span><span class="type">Request</span>, <span class="type">A</span>] &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">apply</span>(</span>) = &#123;</span><br><span class="line">  	println(<span class="string">"play 好屌"</span>)</span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></span>
@@ -260,6 +270,10 @@ Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/play-start/" rel="prev" title="play启动流程">
+                play启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -315,11 +329,11 @@ Play中的Action源码分析1trait ActionBuilder[A] &amp;#123;&amp;#125;">
           <img class="site-author-image" src="/images/avatar.png" alt="lazys" itemprop="image"/>
           <p class="site-author-name" itemprop="name">lazys</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">这是卓尼玛的博客</p>
+        <p class="site-description motion-element" itemprop="description">这是Lazys的博客</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -1,0 +1,655 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="scala," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="Play启动的过程源码分析Play版本: 2.4.3在play.core.server下DevServerStart 和 ProdServerStart 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。
+以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究">
+<meta property="og:type" content="article">
+<meta property="og:title" content="play启动流程">
+<meta property="og:url" content="http://zhuonima.github.io/play-start/index.html">
+<meta property="og:site_name" content="Lazys的博客">
+<meta property="og:description" content="Play启动的过程源码分析Play版本: 2.4.3在play.core.server下DevServerStart 和 ProdServerStart 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。
+以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究">
+<meta property="og:updated_time" content="2015-11-28T18:10:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="play启动流程">
+<meta name="twitter:description" content="Play启动的过程源码分析Play版本: 2.4.3在play.core.server下DevServerStart 和 ProdServerStart 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。
+以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> play启动流程 | Lazys的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lazys的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                play启动流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-29T08:44:49+08:00" content="2015/11/29 00:44:49">
+              2015/11/29 00:44:49
+            </time>
+          </span>
+          <!-- 标签 -->
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="Play启动的过程源码分析">Play启动的过程源码分析</h1><p>Play版本: 2.4.3<br>在play.core.server下<code>DevServerStart</code> 和 <code>ProdServerStart</code> 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。</p>
+<p>以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究</p>
+<a id="more"></a>
+<p>很明显ProdServerStart中的main方法就是启动server的入口<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">  * Start a prod mode server from the command line.</span><br><span class="line">  */</span></span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">main</span>(</span>args: <span class="type">Array</span>[<span class="type">String</span>]) &#123;</span><br><span class="line">   <span class="keyword">val</span> process = <span class="keyword">new</span> <span class="type">RealServerProcess</span>(args)</span><br><span class="line">   start(process)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>start(process)</code>方法做了以下几件事：</p>
+<ul>
+<li>读取配置文件</li>
+<li>创建了pidfile</li>
+<li>启动application</li>
+<li>添加shutdownhook<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">start</span>(</span>process: <span class="type">ServerProcess</span>): <span class="type">ServerWithStop</span> = &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Read settings</span></span><br><span class="line">      <span class="keyword">val</span> config: <span class="type">ServerConfig</span> = readServerConfigSettings(process)</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Create a PID file before we do any real work</span></span><br><span class="line">      <span class="keyword">val</span> pidFile = createPidFile(process, config.configuration)</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Start the application</span></span><br><span class="line">      <span class="keyword">val</span> application: <span class="type">Application</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> environment = <span class="type">Environment</span>(config.rootDir, process.classLoader, <span class="type">Mode</span>.<span class="type">Prod</span>)</span><br><span class="line">        <span class="keyword">val</span> context = <span class="type">ApplicationLoader</span>.createContext(environment)</span><br><span class="line">        <span class="keyword">val</span> loader = <span class="type">ApplicationLoader</span>(context)</span><br><span class="line">        loader.load(context)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="type">Play</span>.start(application)</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Start the server</span></span><br><span class="line">      <span class="keyword">val</span> serverProvider: <span class="type">ServerProvider</span> = <span class="type">ServerProvider</span>.fromConfiguration(process.classLoader, config.configuration)</span><br><span class="line">      <span class="keyword">val</span> server = serverProvider.createServer(config, application)</span><br><span class="line">      process.addShutdownHook &#123;</span><br><span class="line">        server.stop()</span><br><span class="line">        pidFile.foreach(_.delete())</span><br><span class="line">        assert(!pidFile.exists(_.exists), <span class="string">"PID file should not exist!"</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      server</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="type">ServerStartException</span>(message, cause) =&gt;</span><br><span class="line">        process.exit(message, cause)</span><br><span class="line">      <span class="keyword">case</span> <span class="type">NonFatal</span>(e) =&gt;</span><br><span class="line">        process.exit(<span class="string">"Oops, cannot start the server."</span>, cause = <span class="type">Some</span>(e))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在往下走， Play.start(application)<br><code>PlayDefaultUpStreamHandler</code>中//handler是一个<code>play.api.DefaultApplication</code><br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> (requestHeader, handler: <span class="type">Either</span>[<span class="type">Future</span>[<span class="type">Result</span>], (<span class="type">Handler</span>, <span class="type">Application</span>)] <span class="annotation">@unchecked</span>) = <span class="type">Exception</span></span><br><span class="line">          .allCatch[<span class="type">RequestHeader</span>].either(tryToCreateRequest).fold(</span><br><span class="line">            e =&gt; &#123;</span><br><span class="line">              <span class="comment">// use unparsed path</span></span><br><span class="line">              <span class="keyword">val</span> rh = createRequestHeader(nettyUri.getPath)</span><br><span class="line">              <span class="keyword">val</span> result = <span class="type">Future</span></span><br><span class="line">                .successful(()) <span class="comment">// Create a dummy future</span></span><br><span class="line">                .flatMap &#123; _ =&gt;</span><br><span class="line">                  <span class="comment">// Call errorHandler in another context, don't block here</span></span><br><span class="line">                  errorHandler(server.applicationProvider.get.toOption).onClientError(rh, <span class="number">400</span>, e.getMessage)</span><br><span class="line">                &#125;(play.api.libs.iteratee.<span class="type">Execution</span>.trampoline)</span><br><span class="line">              (rh, <span class="type">Left</span>(result))</span><br><span class="line">            &#125;,</span><br><span class="line">            rh =&gt; server.getHandlerFor(rh) <span class="keyword">match</span> &#123;</span><br><span class="line">              <span class="keyword">case</span> directResult @ <span class="type">Left</span>(_) =&gt; (rh, directResult)</span><br><span class="line">              <span class="keyword">case</span> <span class="type">Right</span>((taggedRequestHeader, handler, application)) =&gt; (taggedRequestHeader, <span class="type">Right</span>((handler, application)))</span><br><span class="line">            &#125;</span><br><span class="line">          )</span><br></pre></td></tr></table></figure></p>
+<p>这个时候已经找到了Action， case Right((taggedRequestHeader, handler, application)), handler就是action， application是一个DefaultApplication对象， 最后将handler和application返回给外层的handler</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">handler <span class="keyword">match</span> &#123;</span><br><span class="line">          <span class="comment">//execute normal action</span></span><br><span class="line">          <span class="keyword">case</span> <span class="type">Right</span>((action: <span class="type">EssentialAction</span>, app)) =&gt;</span><br><span class="line">            <span class="keyword">val</span> a = <span class="type">EssentialAction</span> &#123; rh =&gt;</span><br><span class="line">              <span class="keyword">import</span> play.api.libs.iteratee.<span class="type">Execution</span>.<span class="type">Implicits</span>.trampoline</span><br><span class="line">              <span class="type">Iteratee</span>.flatten(action(rh).unflatten.map(_.it).recover &#123;</span><br><span class="line">                <span class="keyword">case</span> error =&gt;</span><br><span class="line">                  <span class="type">Iteratee</span>.flatten(</span><br><span class="line">                    app.errorHandler.onServerError(requestHeader, error).map(result =&gt; <span class="type">Done</span>(result, <span class="type">Input</span>.<span class="type">Empty</span>))</span><br><span class="line">                  ): <span class="type">Iteratee</span>[<span class="type">Array</span>[<span class="type">Byte</span>], <span class="type">Result</span>]</span><br><span class="line">              &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            handleAction(a, <span class="type">Some</span>(app))</span><br><span class="line"></span><br><span class="line">          <span class="keyword">case</span> <span class="type">Right</span>((ws @ <span class="type">WebSocket</span>(f), app)) <span class="keyword">if</span> websocketableRequest.check =&gt;</span><br><span class="line">            logger.trace(<span class="string">"Serving this request with: "</span> + ws)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">val</span> executed = <span class="type">Future</span>(f(requestHeader))(play.api.libs.concurrent.<span class="type">Execution</span>.defaultContext)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">import</span> play.api.libs.iteratee.<span class="type">Execution</span>.<span class="type">Implicits</span>.trampoline</span><br><span class="line">            executed.flatMap(identity).map &#123;</span><br><span class="line">              <span class="keyword">case</span> <span class="type">Left</span>(result) =&gt;</span><br><span class="line">                <span class="comment">// WebSocket was rejected, send result</span></span><br><span class="line">                <span class="keyword">val</span> a = <span class="type">EssentialAction</span>(_ =&gt; <span class="type">Done</span>(result, <span class="type">Input</span>.<span class="type">Empty</span>))</span><br><span class="line">                handleAction(a, <span class="type">Some</span>(app))</span><br><span class="line">              <span class="keyword">case</span> <span class="type">Right</span>(socket) =&gt;</span><br><span class="line">                <span class="keyword">val</span> bufferLimit = app.configuration.getBytes(<span class="string">"play.websocket.buffer.limit"</span>).getOrElse(<span class="number">65536</span>L)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">val</span> enumerator = websocketHandshake(ctx, nettyHttpRequest, e, bufferLimit)(ws.inFormatter)</span><br><span class="line">                socket(enumerator, socketOut(ctx)(ws.outFormatter))</span><br><span class="line">            &#125;.recover &#123;</span><br><span class="line">              <span class="keyword">case</span> error =&gt;</span><br><span class="line">                app.errorHandler.onServerError(requestHeader, error).map &#123; result =&gt;</span><br><span class="line">                  <span class="keyword">val</span> a = <span class="type">EssentialAction</span>(_ =&gt; <span class="type">Done</span>(result, <span class="type">Input</span>.<span class="type">Empty</span>))</span><br><span class="line">                  handleAction(a, <span class="type">Some</span>(app))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">          <span class="comment">//handle bad websocket request</span></span><br><span class="line">          <span class="keyword">case</span> <span class="type">Right</span>((<span class="type">WebSocket</span>(_), app)) =&gt;</span><br><span class="line">            logger.trace(<span class="string">"Bad websocket request"</span>)</span><br><span class="line">            <span class="keyword">val</span> a = <span class="type">EssentialAction</span>(_ =&gt; <span class="type">Done</span>(<span class="type">Results</span>.<span class="type">BadRequest</span>, <span class="type">Input</span>.<span class="type">Empty</span>))</span><br><span class="line">            handleAction(a, <span class="type">Some</span>(app))</span><br><span class="line"></span><br><span class="line">          <span class="keyword">case</span> <span class="type">Left</span>(e) =&gt;</span><br><span class="line">            logger.trace(<span class="string">"No handler, got direct result: "</span> + e)</span><br><span class="line">            <span class="keyword">import</span> play.api.libs.iteratee.<span class="type">Execution</span>.<span class="type">Implicits</span>.trampoline</span><br><span class="line">            <span class="keyword">val</span> a = <span class="type">EssentialAction</span>(_ =&gt; <span class="type">Iteratee</span>.flatten(e.map(result =&gt; <span class="type">Done</span>(result, <span class="type">Input</span>.<span class="type">Empty</span>))))</span><br><span class="line">            handleAction(a, <span class="type">None</span>)</span><br><span class="line"></span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>接下来handler使用match关键字匹配， Action分别是普通的请求，websocket的情况， 只追普通Action这条线， 进入handleAction方法</p>
+<pre><code class="scala"><span class="function"><span class="keyword">def</span> <span class="title">handleAction</span>(</span>action: <span class="type">EssentialAction</span>, app: <span class="type">Option</span>[<span class="type">Application</span>]) {
+          logger.trace(<span class="string">"Serving this request with: "</span> + action)
+
+          <span class="keyword">val</span> bodyParser = <span class="type">Iteratee</span>.flatten(
+            scala.concurrent.<span class="type">Future</span>(action(requestHeader))(play.api.libs.concurrent.<span class="type">Execution</span>.defaultContext)
+          )
+
+          <span class="keyword">import</span> play.api.libs.iteratee.<span class="type">Execution</span>.<span class="type">Implicits</span>.trampoline
+
+          <span class="keyword">val</span> expectContinue: <span class="type">Option</span>[_] = requestHeader.headers.get(<span class="string">"Expect"</span>).filter(_.equalsIgnoreCase(<span class="string">"100-continue"</span>))
+
+          <span class="comment">// Regardless of whether the client is expecting 100 continue or not, we need to feed the body here in the</span>
+          <span class="comment">// Netty thread, so that the handler is replaced in this thread, so that if the client does start sending</span>
+          <span class="comment">// body chunks (which it might according to the HTTP spec if we're slow to respond), we can handle them.</span>
+
+          <span class="keyword">val</span> eventuallyResult: <span class="type">Future</span>[<span class="type">Result</span>] = <span class="keyword">if</span> (nettyHttpRequest.isChunked) {
+
+            <span class="keyword">val</span> pipeline = ctx.getChannel.getPipeline
+            <span class="keyword">val</span> result = newRequestBodyUpstreamHandler(bodyParser, { handler =&gt;
+              pipeline.replace(<span class="string">"handler"</span>, <span class="string">"handler"</span>, handler)
+            }, {
+              pipeline.replace(<span class="string">"handler"</span>, <span class="string">"handler"</span>, <span class="keyword">this</span>)
+            })
+
+            result
+
+          } <span class="keyword">else</span> {
+
+            <span class="keyword">val</span> bodyEnumerator = {
+              <span class="keyword">val</span> body = {
+                <span class="keyword">val</span> cBuffer = nettyHttpRequest.getContent
+                <span class="keyword">val</span> bytes = <span class="keyword">new</span> <span class="type">Array</span>[<span class="type">Byte</span>](cBuffer.readableBytes())
+                cBuffer.readBytes(bytes)
+                bytes
+              }
+              <span class="type">Enumerator</span>(body).andThen(<span class="type">Enumerator</span>.enumInput(<span class="type">EOF</span>))
+            }
+
+            bodyEnumerator |&gt;&gt;&gt; bodyParser
+          }
+</code></pre>
+<p>检查是否是chunked， 不是返回bodyEnumerator |&gt;&gt;&gt; bodyParser</p>
+<h3 id="TODO">TODO</h3><ul>
+<li>PlayDefaultUpStream是什么时候被找到的</li>
+<li>Iteratee相关</li>
+<li>组织好语言</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/scala/" rel="tag">#scala</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/itearatees-iteratee-enumerator/" rel="next" title="Iteratess && Itearatee && Enumerator">
+                <i class="fa fa-chevron-left"></i> Iteratess && Itearatee && Enumerator
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- is_post 一直设置为false就不会展开了 -->
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.png" alt="lazys" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">lazys</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">这是Lazys的博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lazys</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

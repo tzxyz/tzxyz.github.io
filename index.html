@@ -51,15 +51,15 @@
 
 
 
-<meta name="description" content="这是卓尼玛的博客">
+<meta name="description" content="这是Lazys的博客">
 <meta property="og:type" content="website">
-<meta property="og:title" content="为什么还在问为什么">
+<meta property="og:title" content="Lazys的博客">
 <meta property="og:url" content="http://zhuonima.github.io/index.html">
-<meta property="og:site_name" content="为什么还在问为什么">
-<meta property="og:description" content="这是卓尼玛的博客">
+<meta property="og:site_name" content="Lazys的博客">
+<meta property="og:description" content="这是Lazys的博客">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="为什么还在问为什么">
-<meta name="twitter:description" content="这是卓尼玛的博客">
+<meta name="twitter:title" content="Lazys的博客">
+<meta name="twitter:description" content="这是Lazys的博客">
 
 
 
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title> 为什么还在问为什么 </title>
+  <title> Lazys的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -104,7 +104,7 @@
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">为什么还在问为什么</span>
+      <span class="site-title">Lazys的博客</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -177,15 +177,89 @@
 
     
     
+
+    
       
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/play-start/" itemprop="url">
+                  play启动流程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-29T00:44:49+00:00" content="2015/11/29 00:44:49">
+              2015/11/29 00:44:49
+            </time>
+          </span>
+          <!-- 标签 -->
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
       
-        
-        
-        
       
 
       
-    
+        
+          <h1 id="Play启动的过程源码分析">Play启动的过程源码分析</h1><p>Play版本: 2.4.3<br>在play.core.server下<code>DevServerStart</code> 和 <code>ProdServerStart</code> 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。</p>
+<p>以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/play-start/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -248,6 +322,10 @@
         
           <h1 id="Itearatee">Itearatee</h1><p><code>Itearatee</code> 到底是什么</p>
 <h1 id="Play_请求过程">Play 请求过程</h1><p>注意<code>PlayDefaultUpstreamHandler</code>在<code>play-netty-server</code>的<code>play.core.server</code>中<br><code>PlayDefaultUpstreamHandler</code> 同样</p>
+<blockquote>
+<p>PlayDefaultUpstreamHandler 中的 handleAction方法处理action</p>
+<p>rh =&gt; server.getHandlerFor(rh) 处理handle</p>
+</blockquote>
 <h1 id="Play中的Action源码分析">Play中的Action源码分析</h1><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">ActionBuilder</span>[</span><span class="type">A</span>] &#123;&#125;</span><br></pre></td></tr></table></figure>
           <div class="post-more-link text-center">
             <a class="btn" href="/itearatees-iteratee-enumerator/#more" rel="contents">
@@ -397,11 +475,11 @@
           <img class="site-author-image" src="/images/avatar.png" alt="lazys" itemprop="image"/>
           <p class="site-author-name" itemprop="name">lazys</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">这是卓尼玛的博客</p>
+        <p class="site-description motion-element" itemprop="description">这是Lazys的博客</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

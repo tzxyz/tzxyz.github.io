@@ -35,7 +35,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="scala," />
+  <meta name="keywords" content="docker," />
 
 
 
@@ -51,25 +51,40 @@
 
 
 
-<meta name="description" content="用法
-implicit关键字作用在方法/变量上
-implicit关键字作用在方法的参数列表上
-implicit关键字作用在类/对象上">
+<meta name="description" content="环境准备
+OSX
+确保安装好docker
+
+搭建mongodb replica1$ docker pull mongo:3.0.7
+
+master 27017
+slave-1 27018
+slave-2 27019">
 <meta property="og:type" content="article">
-<meta property="og:title" content="理解Scala中的implicit关键字">
-<meta property="og:url" content="http://zhuonima.github.io/understand-scala-implicit/index.html">
+<meta property="og:title" content="使用docker搭建mongodb replica">
+<meta property="og:url" content="http://zhuonima.github.io/docker-mongo-replica/index.html">
 <meta property="og:site_name" content="Lazys的博客">
-<meta property="og:description" content="用法
-implicit关键字作用在方法/变量上
-implicit关键字作用在方法的参数列表上
-implicit关键字作用在类/对象上">
-<meta property="og:updated_time" content="2015-11-20T17:07:20.000Z">
+<meta property="og:description" content="环境准备
+OSX
+确保安装好docker
+
+搭建mongodb replica1$ docker pull mongo:3.0.7
+
+master 27017
+slave-1 27018
+slave-2 27019">
+<meta property="og:updated_time" content="2015-12-13T15:37:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="理解Scala中的implicit关键字">
-<meta name="twitter:description" content="用法
-implicit关键字作用在方法/变量上
-implicit关键字作用在方法的参数列表上
-implicit关键字作用在类/对象上">
+<meta name="twitter:title" content="使用docker搭建mongodb replica">
+<meta name="twitter:description" content="环境准备
+OSX
+确保安装好docker
+
+搭建mongodb replica1$ docker pull mongo:3.0.7
+
+master 27017
+slave-1 27018
+slave-2 27019">
 
 
 
@@ -81,7 +96,7 @@ implicit关键字作用在类/对象上">
   };
 </script>
 
-  <title> 理解Scala中的implicit关键字 | Lazys的博客 </title>
+  <title> 使用docker搭建mongodb replica | Lazys的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -201,7 +216,7 @@ implicit关键字作用在类/对象上">
             
             
               
-                理解Scala中的implicit关键字
+                使用docker搭建mongodb replica
               
             
           </h1>
@@ -210,8 +225,8 @@ implicit关键字作用在类/对象上">
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-11-14T04:46:25+08:00" content="2015/11/13 20:46:25">
-              2015/11/13 20:46:25
+            <time itemprop="dateCreated" datetime="2015-12-14T07:08:15+08:00" content="2015/12/13 23:08:15">
+              2015/12/13 23:08:15
             </time>
           </span>
           <!-- 标签 -->
@@ -235,23 +250,30 @@ implicit关键字作用在类/对象上">
       
 
       
-        <span itemprop="articleBody"><h3 id="用法">用法</h3><ul>
-<li>implicit关键字作用在方法/变量上</li>
-<li>implicit关键字作用在方法的参数列表上</li>
-<li>implicit关键字作用在类/对象上</li>
+        <span itemprop="articleBody"><h1 id="环境准备">环境准备</h1><ul>
+<li>OSX</li>
+<li>确保安装好docker</li>
+</ul>
+<h1 id="搭建mongodb_replica">搭建mongodb replica</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull mongo:<span class="number">3.0</span>.<span class="number">7</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>master 27017</li>
+<li>slave-1 27018</li>
+<li>slave-2 27019</li>
 </ul>
 <a id="more"></a>
-<h3 id="implicit声明的方法/变量">implicit声明的方法/变量</h3><p>如果implicit关键字作用在方法/变量上时,当编译器在当前作用域的上下文发现类型不匹配编译不通过时会去寻找这些implicit声明的方法,变量,尝试做隐式转换</p>
-<h3 id="implicit声明的参数列表">implicit声明的参数列表</h3><p>如下代码:</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="function"><span class="keyword">def</span> <span class="title">findInt</span>(</span><span class="keyword">implicit</span> x: <span class="type">Int</span>) = x</span><br><span class="line">findInt: (<span class="keyword">implicit</span> x: <span class="type">Int</span>):<span class="type">Int</span></span><br></pre></td></tr></table></figure>
-<p>该方法在参数列表上声明了一个隐式参数x, 该方法可以和普通方法一样正常调用</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; findInt(<span class="number">10</span>)</span><br><span class="line">res0: <span class="type">Int</span> = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>如果不传递参数</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; findInt</span><br><span class="line">&lt;console&gt;:<span class="number">12</span>: error: could not find <span class="keyword">implicit</span> value <span class="keyword">for</span> parameter x: <span class="type">Int</span> findInt</span><br></pre></td></tr></table></figure>
-<p>编译器在当前作用域的上下文中去寻找被implicit关键字修饰的变量是否有Int类型的,没有找到,抛出异常.这时候我们声明一个隐式变量i,在调用findInt</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">implicit</span> <span class="keyword">val</span> i = <span class="number">1024</span></span><br><span class="line">i: <span class="type">Int</span> = <span class="number">1024</span></span><br><span class="line"></span><br><span class="line">scala&gt; findInt</span><br><span class="line">res1: <span class="type">Int</span> = <span class="number">1024</span></span><br></pre></td></tr></table></figure>
-<p>使用implicit关键字修饰了变量i,调用findInt函数没有传递参数,于是编译器在当前作用域中寻找被implicit关键字修饰的Int类型的变量,并将它传递给了findInt</p>
-<h3 id="implicit声明的类/对象">implicit声明的类/对象</h3></span>
+<p>master启动脚本run-mongo-master.sh<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># !/bin/bash</span></span><br><span class="line"></span><br><span class="line">docker run --name master -p <span class="number">192.168</span>.<span class="number">99.100</span>:<span class="number">27017</span>:<span class="number">27017</span> mongo:<span class="number">3.0</span>.<span class="number">7</span> --replSet mongo-replica</span><br></pre></td></tr></table></figure></p>
+<p>slave-1，绑定27018，启动脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># !/bin/bash</span></span><br><span class="line"></span><br><span class="line">docker run --name slave-<span class="number">1</span> -p <span class="number">192.168</span>.<span class="number">99.100</span>:<span class="number">27018</span>:<span class="number">27018</span> mongo:<span class="number">3.0</span>.<span class="number">7</span> --replSet mongo-replica --port <span class="number">27018</span></span><br></pre></td></tr></table></figure></p>
+<p>slave-2，绑定27019，启动脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># !/bin/bash</span></span><br><span class="line"></span><br><span class="line">docker run --name slave-<span class="number">2</span> -p <span class="number">192.168</span>.<span class="number">99.100</span>:<span class="number">27019</span>:<span class="number">27019</span> mongo:<span class="number">3.0</span>.<span class="number">7</span> --replSet mongo-replica --port <span class="number">27019</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="参数说明：">参数说明：</h3><ul>
+<li>–name docker container的名称</li>
+<li>-p 端口映射，由于mac上使用docker machine，所以要使用docker machine的IP</li>
+<li>–replSet replica的id</li>
+<li>–port mongodb启动绑定的端口</li>
+</ul>
+<h3 id="外部安装mongo-shell，_mongo-tool，通过mongo客户端验证">外部安装mongo-shell， mongo-tool，通过mongo客户端验证</h3><p>连接master，在master上使用<code>rs.initial()</code>初始化replica,</p>
+<p>配置replica，add主机，注意initial()初始化时候master的host，需要重新修改<br>连接slave，在slave上rs.slaveOk()</p>
+<h1 id="测试">测试</h1><p>在master上面插入一个document，查看slave是否同步</p>
+<h1 id="搭建tokumx_replica">搭建tokumx replica</h1></span>
       
     </div>
 
@@ -259,7 +281,7 @@ implicit关键字作用在类/对象上">
       
         <div class="post-tags">
           
-            <a href="/tags/scala/" rel="tag">#scala</a>
+            <a href="/tags/docker/" rel="tag">#docker</a>
           
         </div>
       
@@ -268,13 +290,13 @@ implicit关键字作用在类/对象上">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/play-start/" rel="next" title="play启动流程">
+                <i class="fa fa-chevron-left"></i> play启动流程
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/itearatees-iteratee-enumerator/" rel="prev" title="Iteratess && Itearatee && Enumerator">
-                Iteratess && Itearatee && Enumerator <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>

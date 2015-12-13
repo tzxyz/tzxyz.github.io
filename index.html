@@ -279,6 +279,263 @@
 
 
     
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/play-start/" itemprop="url">
+                  play启动流程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-29T00:44:49+00:00" content="2015/11/29 00:44:49">
+              2015/11/29 00:44:49
+            </time>
+          </span>
+          <!-- 标签 -->
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="Play启动的过程源码分析">Play启动的过程源码分析</h1><p>Play版本: 2.4.3<br>在play.core.server下<code>DevServerStart</code> 和 <code>ProdServerStart</code> 分别对应dev模式和prod模式，play是如何根据配置文件启动不同的Server还未知。</p>
+<p>以ProdServerStart为例， DevServerStart还有一个热更新相关的东西，干扰太多，我只想知道启动这个过程的主线， 暂时不去研究</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/play-start/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/itearatees-iteratee-enumerator/" itemprop="url">
+                  Iteratess && Itearatee && Enumerator
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-22T00:01:52+00:00" content="2015/11/22 00:01:52">
+              2015/11/22 00:01:52
+            </time>
+          </span>
+          <!-- 标签 -->
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="Itearatee">Itearatee</h1><p><code>Itearatee</code> 到底是什么</p>
+<h1 id="Play_请求过程">Play 请求过程</h1><p>注意<code>PlayDefaultUpstreamHandler</code>在<code>play-netty-server</code>的<code>play.core.server</code>中<br><code>PlayDefaultUpstreamHandler</code> 同样</p>
+<blockquote>
+<p>PlayDefaultUpstreamHandler 中的 handleAction方法处理action</p>
+<p>rh =&gt; server.getHandlerFor(rh) 处理handle</p>
+</blockquote>
+<h1 id="Play中的Action源码分析">Play中的Action源码分析</h1><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">ActionBuilder</span>[</span><span class="type">A</span>] &#123;&#125;</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/itearatees-iteratee-enumerator/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/understand-scala-implicit/" itemprop="url">
+                  理解Scala中的implicit关键字
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-13T20:46:25+00:00" content="2015/11/13 20:46:25">
+              2015/11/13 20:46:25
+            </time>
+          </span>
+          <!-- 标签 -->
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h3 id="用法">用法</h3><ul>
+<li>implicit关键字作用在方法/变量上</li>
+<li>implicit关键字作用在方法的参数列表上</li>
+<li>implicit关键字作用在类/对象上</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/understand-scala-implicit/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
 
   </section>
 
